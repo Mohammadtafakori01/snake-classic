@@ -1,0 +1,38 @@
+<canvas id="c" width="400" height="400"></canvas>
+<script>
+    const c = document.getElementById("c"), ctx = c.getContext("2d")
+    const d = 20, canvasSize = 400;
+    let x = y = 0, dx = dy = 0, snake = [], max = 4, fx = fy = 160, score = 0;
+    document.addEventListener("keydown", e => {
+        switch(e.keyCode){
+            case 37: dx = -d; dy = 0; break;
+            case 38: dy = -d; dx = 0; break;
+            case 39: dx = d; dy = 0; break;
+            case 40: dy = d; dx = 0; break;
+        }
+    })
+    setInterval(() => {
+        x += dx;
+        y += dy;
+        snake.push({x, y});
+        if(snake.length > max) snake.shift();
+        if(x < 0 || x >= canvasSize || y < 0 || y >= canvasSize || snake.slice(0, -1).some(s => s.x === x && s.y === y)) {
+            x = y = 0; dx = dy = 0; max = 4; snake = []; score = 0;
+        }
+        if(x === fx && y === fy){
+            max++;
+            score += 10;
+            fx = Math.floor(Math.random() * 20) * d;
+            fy = Math.floor(Math.random() * 20) * d;
+        }
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvasSize, canvasSize);
+        ctx.fillStyle = "lime";
+        snake.forEach(s => ctx.fillRect(s.x, s.y, d, d));
+        ctx.fillStyle = "red";
+        ctx.fillRect(fx, fy, d, d);
+        ctx.fillStyle = "white";
+        ctx.font = "16px Arial";
+        ctx.fillText("امتیاز: " + score, 10, 20);
+    }, 100)
+</script>
